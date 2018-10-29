@@ -230,6 +230,7 @@
 		<module>external/sql</module>
 		<module>external/tika</module>
 		<module>external/warc</module>
+		<module>external/pulsar</module>
 		<module>archetype</module>
 	</modules>
 </project>
