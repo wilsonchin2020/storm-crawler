@@ -18,14 +18,17 @@
 package com.digitalpebble.stormcrawler.pulsar;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 import org.apache.pulsar.client.api.ClientBuilder;
 import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.storm.MessageToValuesMapper;
 import org.apache.pulsar.storm.PulsarSpoutConfiguration;
-import org.apache.storm.Config;
+import org.apache.storm.spout.SpoutOutputCollector;
+import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
+import org.apache.storm.topology.base.BaseRichSpout;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Values;
 
@@ -35,52 +38,62 @@ import com.digitalpebble.stormcrawler.util.ConfUtils;
 
 /** Wrapper for PulsarSpout **/
 
-public class PulsarSpout {
+public class PulsarSpout extends BaseRichSpout implements MessageToValuesMapper {
 
-	@SuppressWarnings("serial")
-	static MessageToValuesMapper messageToValuesMapper = new MessageToValuesMapper() {
+    private BaseRichSpout pulsarSpout;
 
-		@Override
-		public Values toValues(Message msg) {
-			// URL - STATUS - METADATA
-			Metadata metadata = new Metadata();
-			String[] tokens = new String(msg.getData(), StandardCharsets.UTF_8).split("\t");
-			String url = tokens[0];
-			String status = tokens[1];
+    @Override
+    public void open(Map config, TopologyContext context,
+            SpoutOutputCollector collector) {
+        String service = ConfUtils.getString(config, "pulsar.spout.serviceUrl",
+                "pulsar://localhost:6650");
+        String topic = ConfUtils.getString(config, "pulsar.spout.topic");
+        String subscription = ConfUtils.getString(config,
+                "pulsar.spout.subscription");
+        PulsarSpoutConfiguration spoutConf = new PulsarSpoutConfiguration();
+        spoutConf.setTopic(topic);
+        spoutConf.setSubscriptionName(subscription);
+        spoutConf.setServiceUrl(service);
+        spoutConf.setMessageToValuesMapper(this);
 
-			for (int i = 2; i < tokens.length; i++) {
-				String token = tokens[i];
-				// split into key & value
-				int firstequals = token.indexOf("=");
-				String value = null;
-				String key = token;
-				if (firstequals != -1) {
-					key = token.substring(0, firstequals);
-					value = token.substring(firstequals + 1);
-				}
-				metadata.addValue(key, value);
-			}
+        ClientBuilder builder = PulsarClient.builder();
+        pulsarSpout = new org.apache.pulsar.storm.PulsarSpout(spoutConf,
+                builder);
+    }
 
-			return new Values(url, metadata, Status.valueOf(status));
-		}
+    @Override
+    public void nextTuple() {
+        pulsarSpout.nextTuple();
+    }
 
-		@Override
-		public void declareOutputFields(OutputFieldsDeclarer declarer) {
-			declarer.declare(new Fields("url", "metadata", "status"));
-		}
-	};
+    @Override
+    public void declareOutputFields(OutputFieldsDeclarer declarer) {
+        declarer.declare(new Fields("url", "metadata", "status"));
+    }
 
-	public static org.apache.pulsar.storm.PulsarSpout getSpout(Config config) {
-		String service = ConfUtils.getString(config, "pulsar.spout.serviceUrl", "pulsar://localhost:6650");
-		String topic = ConfUtils.getString(config, "pulsar.spout.topic");
-		String subscription = ConfUtils.getString(config, "pulsar.spout.subscription");
-		PulsarSpoutConfiguration spoutConf = new PulsarSpoutConfiguration();
-		spoutConf.setTopic(topic);
-		spoutConf.setSubscriptionName(subscription);
-		spoutConf.setServiceUrl(service);
-		spoutConf.setMessageToValuesMapper(messageToValuesMapper);
-		ClientBuilder builder = PulsarClient.builder();
-		return new org.apache.pulsar.storm.PulsarSpout(spoutConf, builder);
-	}
+    @Override
+    public Values toValues(Message<byte[]> msg) {
+        // URL - STATUS - METADATA
+        Metadata metadata = new Metadata();
+        String[] tokens = new String(msg.getData(), StandardCharsets.UTF_8)
+                .split("\t");
+        String url = tokens[0];
+        String status = tokens[1];
+
+        for (int i = 2; i < tokens.length; i++) {
+            String token = tokens[i];
+            // split into key & value
+            int firstequals = token.indexOf("=");
+            String value = null;
+            String key = token;
+            if (firstequals != -1) {
+                key = token.substring(0, firstequals);
+                value = token.substring(firstequals + 1);
+            }
+            metadata.addValue(key, value);
+        }
+
+        return new Values(url, metadata, Status.valueOf(status));
+    }
 
 }
