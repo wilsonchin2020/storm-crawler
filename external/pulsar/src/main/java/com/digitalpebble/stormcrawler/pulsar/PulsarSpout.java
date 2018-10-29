@@ -49,7 +49,7 @@ public class PulsarSpout extends BaseRichSpout implements MessageToValuesMapper 
                 "pulsar://localhost:6650");
         String topic = ConfUtils.getString(config, "pulsar.spout.topic");
         String subscription = ConfUtils.getString(config,
-                "pulsar.spout.subscription");
+                "pulsar.spout.subscription", context.getStormId());
         PulsarSpoutConfiguration spoutConf = new PulsarSpoutConfiguration();
         spoutConf.setTopic(topic);
         spoutConf.setSubscriptionName(subscription);

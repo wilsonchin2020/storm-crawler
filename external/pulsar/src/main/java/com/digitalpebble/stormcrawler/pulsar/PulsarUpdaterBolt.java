@@ -62,7 +62,7 @@ public class PulsarUpdaterBolt extends AbstractStatusUpdaterBolt {
                 "pulsar.status.serviceUrl", "pulsar://localhost:6650");
         String topic = ConfUtils.getString(stormConf, "pulsar.status.topic");
         String producerName = ConfUtils.getString(stormConf,
-                "pulsar.status.producerName");
+                "pulsar.status.producerName", context.getStormId());
         // set to infinity (i.e. no timeout)
         int sendTimeout = ConfUtils.getInt(stormConf,
                 "pulsar.status.sendTimeout", 0);

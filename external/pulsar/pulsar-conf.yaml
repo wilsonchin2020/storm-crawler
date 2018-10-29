@@ -1,7 +1,9 @@
 config:
   pulsar.spout.topic: "persistent://public/crawl/in"
-  pulsar.spout.subscription: "sc-subscription"
+  # use the topology id as subscription name by default
+  # pulsar.spout.subscription: "sc-subscription"
 
   pulsar.status.topic: "persistent://public/crawl/out"
-  pulsar.status.producerName: "stormcrawler"
+  # use the topology id as producer name by default
+  # pulsar.status.producerName: "stormcrawler"
   pulsar.status.sendTimeout: 0
