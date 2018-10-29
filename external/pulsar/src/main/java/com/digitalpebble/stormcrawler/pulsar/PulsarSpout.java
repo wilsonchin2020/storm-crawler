@@ -59,6 +59,7 @@ public class PulsarSpout extends BaseRichSpout implements MessageToValuesMapper 
         ClientBuilder builder = PulsarClient.builder();
         pulsarSpout = new org.apache.pulsar.storm.PulsarSpout(spoutConf,
                 builder);
+        pulsarSpout.open(config, context, collector);
     }
 
     @Override
