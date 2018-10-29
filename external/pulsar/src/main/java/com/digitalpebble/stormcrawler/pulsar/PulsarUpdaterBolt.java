@@ -63,6 +63,12 @@ public class PulsarUpdaterBolt extends AbstractStatusUpdaterBolt {
         String topic = ConfUtils.getString(stormConf, "pulsar.status.topic");
         String producerName = ConfUtils.getString(stormConf,
                 "pulsar.status.producerName", context.getStormId());
+        int totalTasks = context
+                .getComponentTasks(context.getThisComponentId()).size();
+        if (totalTasks > 1) {
+            producerName += "_" + context.getThisTaskIndex();
+        }
+
         // set to infinity (i.e. no timeout)
         int sendTimeout = ConfUtils.getInt(stormConf,
                 "pulsar.status.sendTimeout", 0);
