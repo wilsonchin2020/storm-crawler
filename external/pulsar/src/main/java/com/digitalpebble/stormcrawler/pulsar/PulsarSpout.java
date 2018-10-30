@@ -40,7 +40,7 @@ import com.digitalpebble.stormcrawler.util.ConfUtils;
 
 public class PulsarSpout extends BaseRichSpout implements MessageToValuesMapper {
 
-    private BaseRichSpout pulsarSpout;
+    private org.apache.pulsar.storm.PulsarSpout pulsarSpout;
 
     @Override
     public void open(Map config, TopologyContext context,
@@ -71,6 +71,21 @@ public class PulsarSpout extends BaseRichSpout implements MessageToValuesMapper 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         declarer.declare(new Fields("url", "metadata", "status"));
+    }
+
+    @Override
+    public void ack(Object msgId) {
+        pulsarSpout.ack(msgId);
+    }
+
+    @Override
+    public void fail(Object msgId) {
+        pulsarSpout.fail(msgId);
+    }
+
+    @Override
+    public void close() {
+        pulsarSpout.close();
     }
 
     @Override
