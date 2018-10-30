@@ -55,6 +55,7 @@ public class PulsarSpout extends BaseRichSpout implements MessageToValuesMapper 
         spoutConf.setSubscriptionName(subscription);
         spoutConf.setServiceUrl(service);
         spoutConf.setMessageToValuesMapper(this);
+        spoutConf.setSharedConsumerEnabled(true);
 
         ClientBuilder builder = PulsarClient.builder();
         pulsarSpout = new org.apache.pulsar.storm.PulsarSpout(spoutConf,
