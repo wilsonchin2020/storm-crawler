@@ -122,6 +122,10 @@ public class PulsarUpdaterBolt extends AbstractStatusUpdaterBolt {
 			String key = partitioner.getPartition(url, metadata);
 			message.key(key);
 		}
+
+		// use nextFetchTime as eventTime
+		message.eventTime(nextFetch.getTime());
+
 		CompletableFuture<MessageId> messageID = message.sendAsync();
 
 		// ack when we know it has successfully completed or fail otherwise
