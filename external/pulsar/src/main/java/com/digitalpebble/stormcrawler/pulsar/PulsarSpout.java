@@ -31,6 +31,8 @@ import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.topology.base.BaseRichSpout;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Values;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.digitalpebble.stormcrawler.Metadata;
 import com.digitalpebble.stormcrawler.persistence.Status;
@@ -41,6 +43,11 @@ import com.digitalpebble.stormcrawler.util.ConfUtils;
 public class PulsarSpout extends BaseRichSpout implements MessageToValuesMapper {
 
     private org.apache.pulsar.storm.PulsarSpout pulsarSpout;
+
+    private int taskIndex = 0;
+
+    private static final Logger LOG = LoggerFactory
+            .getLogger(PulsarSpout.class);
 
     @Override
     public void open(Map config, TopologyContext context,
@@ -55,7 +62,9 @@ public class PulsarSpout extends BaseRichSpout implements MessageToValuesMapper 
         spoutConf.setSubscriptionName(subscription);
         spoutConf.setServiceUrl(service);
         spoutConf.setMessageToValuesMapper(this);
-        spoutConf.setSharedConsumerEnabled(true);
+        // spoutConf.setSharedConsumerEnabled(true);
+
+        taskIndex = context.getThisTaskIndex();
 
         ClientBuilder builder = PulsarClient.builder();
         pulsarSpout = new org.apache.pulsar.storm.PulsarSpout(spoutConf,
@@ -90,6 +99,10 @@ public class PulsarSpout extends BaseRichSpout implements MessageToValuesMapper 
 
     @Override
     public Values toValues(Message<byte[]> msg) {
+
+        LOG.info("Spout #{} got message from {} with key {}", taskIndex,
+                msg.getTopicName(), msg.getKey());
+
         // URL - STATUS - METADATA
         Metadata metadata = new Metadata();
         String[] tokens = new String(msg.getData(), StandardCharsets.UTF_8)
