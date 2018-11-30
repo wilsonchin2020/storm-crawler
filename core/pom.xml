@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.digitalpebble.stormcrawler</groupId>
 		<artifactId>storm-crawler</artifactId>
-		<version>1.12-SNAPSHOT</version>
+		<version>1.13-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>storm-crawler-core</artifactId>
@@ -20,7 +20,7 @@
 		<mockito-all.version>1.10.8</mockito-all.version>
 		<crawler-commons.version>0.10</crawler-commons.version>
 		<guava.version>21.0</guava.version>
-		<jsoup.version>1.11.2</jsoup.version>
+		<jsoup.version>1.11.3</jsoup.version>
 		<icu4j.version>61.1</icu4j.version>
 		<xerces.version>2.11.0</xerces.version>
 		<httpclient.version>4.5.5</httpclient.version>
