@@ -8,7 +8,6 @@
 StormCrawler is an open source collection of resources for building low-latency, scalable web crawlers on [Apache Storm](http://storm.apache.org/). It is provided under [Apache License](http://www.apache.org/licenses/LICENSE-2.0) and is written mostly in Java.
 
 ## Quickstart
-Just want to push
 
 NOTE: These instructions assume that you have [Apache Maven](https://maven.apache.org/install.html) installed.
 
