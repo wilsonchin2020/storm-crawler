@@ -8,10 +8,11 @@
 StormCrawler is an open source collection of resources for building low-latency, scalable web crawlers on [Apache Storm](http://storm.apache.org/). It is provided under [Apache License](http://www.apache.org/licenses/LICENSE-2.0) and is written mostly in Java.
 
 ## Quickstart
+Just want to push
 
 NOTE: These instructions assume that you have [Apache Maven](https://maven.apache.org/install.html) installed.
 
-The easiest way to get started is to generate a brand new StormCrawler-based project using \: 
+The easiest way to get started is to generate a brand new StormCrawler-based project using \:
 
 `mvn archetype:generate -DarchetypeGroupId=com.digitalpebble.stormcrawler -DarchetypeArtifactId=storm-crawler-archetype -DarchetypeVersion=LATEST`
 
@@ -25,7 +26,7 @@ Have a look at the code of the [CrawlTopology class](https://github.com/DigitalP
 
 ## Getting help
 
-The [WIKI](https://github.com/DigitalPebble/storm-crawler/wiki) is a good place to start your investigations but if you are stuck please use the [DigitalPebble mailing list](http://groups.google.com/group/digitalpebble) or use the tag [stormcrawler](http://stackoverflow.com/questions/tagged/stormcrawler) on StackOverflow. 
+The [WIKI](https://github.com/DigitalPebble/storm-crawler/wiki) is a good place to start your investigations but if you are stuck please use the [DigitalPebble mailing list](http://groups.google.com/group/digitalpebble) or use the tag [stormcrawler](http://stackoverflow.com/questions/tagged/stormcrawler) on StackOverflow.
 
 [DigitalPebble Ltd](http://digitalpebble.com) provide commercial support and consulting for Storm-Crawler.
 
